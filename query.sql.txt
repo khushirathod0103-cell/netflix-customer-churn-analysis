@@ -1,0 +1,38 @@
+-- =========================================================================
+-- Project: Netflix User Attrition & Media Consumption Analytics Platform
+-- Objective: Relational warehouse querying for the Tableau BI semantic layer
+-- =========================================================================
+
+SELECT 
+    -- 1. Demographic & Customer Dimensions (Using your lowercase underscore standard)
+    user_id,
+    gender,
+    age,
+    country,
+    join_date,
+    
+    -- 2. Subscription, Revenue & Hardware Metrics
+    subscription_type,
+    monthly_fee,
+    device,
+    
+    -- 3. Core Engagement Telemetry (Continuous floats)
+    watch_hours,
+    avg_watch_time_per_day,
+    favorite_genre,
+    
+    -- 4. Target Matrix: Core Attrition Flag
+    churned,
+    CASE 
+        WHEN churned = 1 THEN 'Churned'
+        ELSE 'Retained'
+    END AS retention_status
+
+FROM netflix_churn
+
+WHERE subscription_type IS NOT NULL
+  AND watch_hours >= 0
+
+DROP VIEW IF EXISTS v_tableau_netflix_analytics;
+
+    
